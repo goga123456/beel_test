@@ -1,23 +1,29 @@
+import asyncio
+import time
 from datetime import datetime
-
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from sender import *
 from aiogram import types, executor, Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
+import schedule
 from openpyxl import load_workbook
 import states
 from markups.keyboard import *
-from config import TOKEN_API
 from markups.markup_kalendar import get_birthday_kb, get_birthday_month_kb, get_birthday_day_kb, get_birthday_year_kb
 from markups.reply_markups_start_and_back import get_start_kb, get_start_and_back_kb
 from messages import *
 from states import ProfileStatesGroup
 
+from config import TOKEN_API
+
 storage = MemoryStorage()
 bot = Bot(TOKEN_API)
 dp = Dispatcher(bot,
                 storage=storage)
+scheduler = AsyncIOScheduler()
 
-
+scheduler.add_job(send_email, "cron", hour=17, minute=40)
 @dp.message_handler(commands=['start'], state='*')
 async def cmd_start(message: types.Message, state: FSMContext) -> None:
     await bot.send_message(chat_id=message.from_user.id,
@@ -456,7 +462,7 @@ async def uzb_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
 
     @dp.callback_query_handler(state=ProfileStatesGroup.input_experience)
     async def exp_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
-        if (callback_query.data == 'Есть'):
+        if callback_query.data == 'Есть':
             await callback_query.message.delete()
             await bot.send_message(chat_id=callback_query.message.chat.id,
                                    text=experience_about)
@@ -474,6 +480,9 @@ async def uzb_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                    text=eng_lang,
                                    reply_markup=get_eng_kb())
             await ProfileStatesGroup.input_eng.set()
+
+
+
 if __name__ == '__main__':
-    executor.start_polling(dp,
-                           skip_updates=True)
+    scheduler.start()
+    executor.start_polling(dp, skip_updates=True)

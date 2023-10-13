@@ -2,27 +2,17 @@ import email
 import email.mime.application
 import smtplib
 import ssl
-import time
-from datetime import datetime
+from datetime import datetime, time
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from bs4 import BeautifulSoup as bs
 from openpyxl import load_workbook
-from schedule import every, repeat, run_pending
 
-#from apscheduler.schedulers.asyncio import AsyncIOScheduler
-
-#async def update():
-    #pass
-
-#scheduler = AsyncIOScheduler(timezone='Europe/Moscow')
-#scheduler.add_job(update, trigger='interval', seconds=10)
 
 filename = 'example.xlsx'
 
 
-@repeat(every().day.at("22:00"))
-def send_email():
+async def send_email():
     msg = MIMEMultipart("alternative")
     fromaddr = "bukanov1234@mail.ru"
     mypass = "6bUc5jT7is5Yvz4pYHLf"
@@ -62,10 +52,10 @@ def send_email():
     server.quit()
 
     print("Successfully")
-    clear_sheet()
+    await clear_sheet()
 
 
-def clear_sheet():
+async def clear_sheet():
     wb = load_workbook(filename=filename)
     ws = wb['Лист1']
     nb_row = ws.max_row
@@ -76,8 +66,3 @@ def clear_sheet():
     ws['C2'] = 0
     ws['D2'] = 0
     wb.save(filename)
-
-
-while True:
-    run_pending()
-    time.sleep(1)
