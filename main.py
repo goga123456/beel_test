@@ -39,7 +39,7 @@ dp = Dispatcher(bot,
 
 scheduler = AsyncIOScheduler()
 
-scheduler.add_job(send_email, "cron", hour=17, minute=40)
+scheduler.add_job(send_email, "cron", hour=9, minute=30)
 @dp.message_handler(commands=['start'], state='*')
 async def cmd_start(message: types.Message, state: FSMContext) -> None:
     await bot.send_message(chat_id=message.from_user.id,
