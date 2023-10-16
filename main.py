@@ -503,7 +503,7 @@ async def uzb_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
 
 async def on_startup(dispatcher):
     await bot.set_webhook(WEBHOOK_URL, drop_pending_updates=True)
-    await scheduler.start()
+    scheduler.start()
 
 
 async def on_shutdown(dispatcher):
