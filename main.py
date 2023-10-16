@@ -18,9 +18,25 @@ from states import ProfileStatesGroup
 from config import TOKEN_API
 
 storage = MemoryStorage()
-bot = Bot(TOKEN_API)
+TOKEN = os.getenv('BOT_TOKEN')
+bot = Bot(token=TOKEN)
+dp = Dispatcher(bot)
+
+HEROKU_APP_NAME = os.getenv('HEROKU_APP_NAME')
+
+# webhook settings
+WEBHOOK_HOST = f'https://{HEROKU_APP_NAME}.herokuapp.com'
+WEBHOOK_PATH = f'/webhook/{TOKEN}'
+WEBHOOK_URL = f'{WEBHOOK_HOST}{WEBHOOK_PATH}'
+
+# webserver settings
+WEBAPP_HOST = '0.0.0.0'
+WEBAPP_PORT = os.getenv('PORT', default=8000)
+
 dp = Dispatcher(bot,
                 storage=storage)
+
+
 scheduler = AsyncIOScheduler()
 
 scheduler.add_job(send_email, "cron", hour=17, minute=40)
@@ -482,7 +498,25 @@ async def uzb_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
             await ProfileStatesGroup.input_eng.set()
 
 
+async def on_startup(dispatcher):
+    await bot.set_webhook(WEBHOOK_URL, drop_pending_updates=True)
+    await scheduler.start()
+
+
+async def on_shutdown(dispatcher):
+    await bot.delete_webhook()
 
 if __name__ == '__main__':
-    scheduler.start()
-    executor.start_polling(dp, skip_updates=True)
+    logging.basicConfig(level=logging.INFO)
+    start_webhook(
+        dispatcher=dp,
+        webhook_path=WEBHOOK_PATH,
+        skip_updates=True,
+        on_startup=on_startup,
+        on_shutdown=on_shutdown,
+        host=WEBAPP_HOST,
+        port=WEBAPP_PORT,
+    )
+
+
+
