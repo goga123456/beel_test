@@ -190,19 +190,42 @@ async def initial_keyboards(callback_query: types.CallbackQuery):
         await bot.send_message(chat_id=callback_query.from_user.id,
                                text=start_msg2,
                                reply_markup=get_initial_kb2())
+
+        wb = load_workbook("example.xlsx")
+        ws = wb['Лист2']
+        ws['A2'].value = ws['A2'].value + 1
+        wb.save("example.xlsx")
+        wb.close()
     if callback_query.data == 'close':
         await ProfileStatesGroup.cause_of_rejection.set()
         await bot.send_message(callback_query.from_user.id, text=cause_of_rejection)
         await callback_query.message.delete()
+
+        wb = load_workbook("example.xlsx")
+        ws = wb['Лист2']
+        ws['B2'].value = ws['B2'].value + 1
+        wb.save("example.xlsx")
+        wb.close()
     if callback_query.data == 'yes_i_want':
         await ProfileStatesGroup.input_number.set()
         await bot.send_message(callback_query.from_user.id, text=number, reply_markup=get_start_kb())
         await callback_query.message.delete()
+
+        wb = load_workbook("example.xlsx")
+        ws = wb['Лист2']
+        ws['C2'].value = ws['C2'].value + 1
+        wb.save("example.xlsx")
+        wb.close()
     if callback_query.data == 'i_dont_want':
         await ProfileStatesGroup.cause_of_rejection.set()
         await bot.send_message(callback_query.from_user.id, text=cause_of_rejection)
         await callback_query.message.delete()
 
+        wb = load_workbook("example.xlsx")
+        ws = wb['Лист2']
+        ws['D2'].value = ws['D2'].value + 1
+        wb.save("example.xlsx")
+        wb.close()
 
 # колбеки на первые 2 сообщения
 
