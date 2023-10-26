@@ -19,7 +19,7 @@ async def send_email():
     toaddr = "bukanov1234@mail.ru"
     msg['From'] = fromaddr
     msg['To'] = toaddr
-    msg['Subject'] = "Отправитель: Telegram bot"
+    msg['Subject'] = "Отправитель: Клон Telegram bot"
 
     now = datetime.now()
     response_date = now.strftime("%d.%m.%Y")
