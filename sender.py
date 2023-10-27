@@ -16,7 +16,7 @@ async def send_email():
     msg = MIMEMultipart("alternative")
     fromaddr = "bukanov1234@mail.ru"
     mypass = "6bUc5jT7is5Yvz4pYHLf"
-    toaddr = "rezume_BOT@beeline.uz"
+    toaddr = "bukanov1234@mail.ru"
     msg['From'] = fromaddr
     msg['To'] = toaddr
     msg['Subject'] = "Отправитель: Клон Telegram bot"
