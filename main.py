@@ -59,9 +59,13 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
 
         now = datetime.now()
         response_date = now.strftime("%d.%m.%Y %H:%M:%S")
+        #await bot.send_message(chat_id="-4070656317",
+                               #text=f"Дата отклика: {response_date}\n\n"
+                                    #f"Причина отказа {data['cause']}")
+        red_text = f"<b><font color='red'>Дата отклика: {response_date}\n\nПричина отказа {data['cause']}</font></b>"
         await bot.send_message(chat_id="-4070656317",
-                               text=f"Дата отклика: {response_date}\n\n"
-                                    f"Причина отказа {data['cause']}")
+                               text=red_text,
+                               parse_mode='HTML')
     await bot.send_message(chat_id=message.from_user.id,
                            text=again)
     await state.finish()
