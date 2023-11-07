@@ -71,7 +71,7 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
 async def load_it_info(message: types.Message, state: FSMContext) -> None:
     async with state.proxy() as data:
         data['number'] = message.text
-        if str(data['number']).isdigit() and str(data['number']).startswith('99893'):
+        if str(data['number']).isdigit() and str(data['number']).startswith('998'):
             if len(str(data['number'])) == 12:
                 await bot.send_message(chat_id=message.from_user.id,
                                        text=name, reply_markup=get_start_and_back_kb())
