@@ -42,7 +42,6 @@ dp = Dispatcher(bot,
 
 scheduler = AsyncIOScheduler()
 
-scheduler.add_job(send_email, "cron", hour=3)
 @dp.message_handler(commands=['start'], state='*')
 async def cmd_start(message: types.Message, state: FSMContext) -> None:
     await bot.send_message(chat_id=message.from_user.id,
@@ -60,13 +59,9 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
 
         now = datetime.now()
         response_date = now.strftime("%d.%m.%Y %H:%M:%S")
-
-        wb = load_workbook("example.xlsx")
-        ws = wb['Лист1']
-        ws.append([response_date, data['cause']])
-        wb.save("example.xlsx")
-        wb.close()
-
+        await bot.send_message(chat_id="-4070656317",
+                               text=f"Дата отклика: {response_date}\n\n"
+                                    f"Причина отказа {data['cause']}")
     await bot.send_message(chat_id=message.from_user.id,
                            text=again)
     await state.finish()
@@ -76,7 +71,7 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
 async def load_it_info(message: types.Message, state: FSMContext) -> None:
     async with state.proxy() as data:
         data['number'] = message.text
-        if str(data['number']).isdigit() and str(data['number']).startswith('998'):
+        if str(data['number']).isdigit() and str(data['number']).startswith('99893'):
             if len(str(data['number'])) == 12:
                 await bot.send_message(chat_id=message.from_user.id,
                                        text=name, reply_markup=get_start_and_back_kb())
@@ -174,11 +169,19 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
         response_date = now.strftime("%d.%m.%Y %H:%M:%S")
         without_spaces = str(data['month']).replace(" ", "")
         birthday = f"{data['day']}.{without_spaces}.{data['year']}"
-        wb = load_workbook("example.xlsx")
-        ws = wb['Лист1']
-        ws.append([response_date, '', data['number'], data['name'], data['surname'], birthday, data['town_and_district'], data['edu'], data['rus'], data['uzb'], data['eng'], data['exp'], data['day_and_time']])
-        wb.save("example.xlsx")
-        wb.close()
+
+        await bot.send_message(chat_id="-4070656317",
+                               text=f"Дата отклика: {response_date}\n\n"
+                                    f"Номер телефона: {data['number']}\n"
+                                    f"Имя: {data['name']}\n"
+                                    f"Фамилия: {data['surname']}\n"
+                                    f"Дата рождения: {birthday}\n"
+                                    f"Адрес проживания: {data['town_and_district']}\n"
+                                    f"Образование: {data['edu']}\n"
+                                    f"Уровень русского: {data['rus']}\n"
+                                    f"Уровень русского: {data['uzb']}\n"
+                                    f"Уровень английского: {data['eng']}\n"
+                                    f"Опыт работы: {data['exp']}")
         await state.finish()
 
 
@@ -191,41 +194,24 @@ async def initial_keyboards(callback_query: types.CallbackQuery):
                                text=start_msg2,
                                reply_markup=get_initial_kb2())
 
-        wb = load_workbook("example.xlsx")
-        ws = wb['Лист2']
-        ws['A2'].value = ws['A2'].value + 1
-        wb.save("example.xlsx")
-        wb.close()
+
     if callback_query.data == 'close':
         await ProfileStatesGroup.cause_of_rejection.set()
         await bot.send_message(callback_query.from_user.id, text=cause_of_rejection)
         await callback_query.message.delete()
 
-        wb = load_workbook("example.xlsx")
-        ws = wb['Лист2']
-        ws['B2'].value = ws['B2'].value + 1
-        wb.save("example.xlsx")
-        wb.close()
+
     if callback_query.data == 'yes_i_want':
         await ProfileStatesGroup.input_number.set()
         await bot.send_message(callback_query.from_user.id, text=number, reply_markup=get_start_kb())
         await callback_query.message.delete()
 
-        wb = load_workbook("example.xlsx")
-        ws = wb['Лист2']
-        ws['C2'].value = ws['C2'].value + 1
-        wb.save("example.xlsx")
-        wb.close()
+
     if callback_query.data == 'i_dont_want':
         await ProfileStatesGroup.cause_of_rejection.set()
         await bot.send_message(callback_query.from_user.id, text=cause_of_rejection)
         await callback_query.message.delete()
 
-        wb = load_workbook("example.xlsx")
-        ws = wb['Лист2']
-        ws['D2'].value = ws['D2'].value + 1
-        wb.save("example.xlsx")
-        wb.close()
 
 # колбеки на первые 2 сообщения
 
@@ -286,11 +272,14 @@ async def calendar_keyboard(callback_query: types.CallbackQuery, state: FSMConte
                     await bot.send_message(callback_query.message.chat.id, text=less_than_18)
                     await bot.send_message(callback_query.message.chat.id, text=again)
 
-                    wb = load_workbook("example.xlsx")
-                    ws = wb['Лист1']
-                    ws.append([response_date, '', data['number'], data['name'], data['surname'], birthday])
-                    wb.save("example.xlsx")
-                    wb.close()
+
+
+                    await bot.send_message(chat_id="-4070656317",
+                                           text=f"Дата отклика: {response_date}\n\n"
+                                                f"Номер телефона: {data['number']}\n"
+                                                f"Имя: {data['name']}\n"
+                                                f"Фамилия: {data['surname']}\n"
+                                                f"Дата рождения: {birthday}")
                     ###Добавление в базу данных
 
                     await callback_query.message.delete()
@@ -526,7 +515,7 @@ async def uzb_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
 
 async def on_startup(dispatcher):
     await bot.set_webhook(WEBHOOK_URL, drop_pending_updates=True, max_connections=100)
-    scheduler.start()
+
 
 
 async def on_shutdown(dispatcher):
