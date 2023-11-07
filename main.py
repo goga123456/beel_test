@@ -76,9 +76,11 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
                 await bot.send_message(chat_id=message.from_user.id,
                                        text=name, reply_markup=get_start_and_back_kb())
                 await ProfileStatesGroup.input_name.set()
-        else:
-            await bot.send_message(chat_id=message.from_user.id,
-                                   text=wrong_number)
+            else:
+                await bot.send_message(chat_id=message.from_user.id,
+                                   text=wrong_number)  
+            
+        
 
 
 @dp.message_handler(content_types=['text'], state=ProfileStatesGroup.input_name)
