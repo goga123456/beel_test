@@ -113,7 +113,7 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
 
         now = datetime.now()
         response_date = now.strftime("%d.%m.%Y %H:%M:%S")
-        await bot.send_message(chat_id="-4047565055",
+        await bot.send_message(chat_id="-1002017595145",
                                text=f"Дата отклика: {response_date}\n\n"
                                     f"Причина отказа {data['cause']}")
         await append_reject(response_date, data['cause'])
@@ -226,7 +226,7 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
         without_spaces = str(data['month']).replace(" ", "")
         birthday = f"{data['day']}.{without_spaces}.{data['year']}"
 
-        await bot.send_message(chat_id="-4047565055",
+        await bot.send_message(chat_id="-1002017595145",
                                text=f"Дата отклика: {response_date}\n\n"
                                     f"Номер телефона: {data['number']}\n"
                                     f"Имя: {data['name']}\n"
@@ -332,7 +332,7 @@ async def calendar_keyboard(callback_query: types.CallbackQuery, state: FSMConte
 
 
 
-                    await bot.send_message(chat_id="-4047565055",
+                    await bot.send_message(chat_id="-1002017595145",
                                            text=f"Дата отклика: {response_date}\n\n"
                                                 f"Номер телефона: {data['number']}\n"
                                                 f"Имя: {data['name']}\n"
