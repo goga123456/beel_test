@@ -17,7 +17,8 @@ from markups.markup_kalendar import get_birthday_kb, get_birthday_month_kb, get_
 from markups.reply_markups_start_and_back import get_start_kb, get_start_and_back_kb
 from messages import *
 from states import ProfileStatesGroup
-
+from google.oauth2.service_account import Credentials
+from googleapiclient.discovery import build
 from config import TOKEN_API
 
 storage = MemoryStorage()
