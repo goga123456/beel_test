@@ -42,6 +42,59 @@ dp = Dispatcher(bot,
 
 scheduler = AsyncIOScheduler()
 
+
+
+#Google sheets
+spreadsheet_id = '1Kw0OvuT-3mr2pRcgYAvCd4GPma1BNtW_mLDLB4EIQDY'
+RANGE_NAME_1 = 'Заявки'
+RANGE_NAME_2 = 'Нет 18 лет'
+RANGE_NAME_3 = 'Отказы'
+credentials = Credentials.from_service_account_file('beelinc-19f9d07341fe.json')
+service = build('sheets', 'v4', credentials=credentials, cache_discovery=False)
+#Google sheets
+
+
+async def append_data(item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, item11):
+    values = [
+        [item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, item11],
+    ]
+    request = service.spreadsheets().values().append(
+        spreadsheetId=spreadsheet_id,
+        range=RANGE_NAME_1,
+        valueInputOption='RAW',
+        insertDataOption='INSERT_ROWS',
+        body={'values': values}
+    )
+    request.execute()
+
+async def append_data_less_18(item1, item2, item3, item4, item5):
+    values = [
+        [item1, item2, item3, item4, item5],
+    ]
+    request = service.spreadsheets().values().append(
+        spreadsheetId=spreadsheet_id,
+        range=RANGE_NAME_2,
+        valueInputOption='RAW',
+        insertDataOption='INSERT_ROWS',
+        body={'values': values}
+    )
+    request.execute()
+
+async def append_reject(item1, item2):
+    values = [
+        [item1, item2],
+    ]
+    request = service.spreadsheets().values().append(
+        spreadsheetId=spreadsheet_id,
+        range=RANGE_NAME_3,
+        valueInputOption='RAW',
+        insertDataOption='INSERT_ROWS',
+        body={'values': values}
+    )
+    request.execute()
+
+
+
 @dp.message_handler(commands=['start'], state='*')
 async def cmd_start(message: types.Message, state: FSMContext) -> None:
     await bot.send_message(chat_id=message.from_user.id,
@@ -62,6 +115,7 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
         await bot.send_message(chat_id="-4047565055",
                                text=f"Дата отклика: {response_date}\n\n"
                                     f"Причина отказа {data['cause']}")
+        await append_reject(response_date, data['cause'])
     await bot.send_message(chat_id=message.from_user.id,
                            text=again)
     await state.finish()
@@ -183,6 +237,8 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
                                     f"Уровень русского: {data['uzb']}\n"
                                     f"Уровень английского: {data['eng']}\n"
                                     f"Опыт работы: {data['exp']}")
+        await append_data(response_date, data['surname'], data['name'], data['number'], birthday, data['town_and_district'], data['edu'], data['rus'], data['uzb'], data['eng'], data['exp'])
+        
         await state.finish()
 
 
@@ -281,6 +337,7 @@ async def calendar_keyboard(callback_query: types.CallbackQuery, state: FSMConte
                                                 f"Имя: {data['name']}\n"
                                                 f"Фамилия: {data['surname']}\n"
                                                 f"Дата рождения: {birthday}")
+                    await append_data_less_18(response_date, data['number'], data['name'], data['surname'], birthday)
                     ###Добавление в базу данных
 
                     await callback_query.message.delete()
