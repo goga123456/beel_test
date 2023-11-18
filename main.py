@@ -235,7 +235,7 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
                                     f"Адрес проживания: {data['town_and_district']}\n"
                                     f"Образование: {data['edu']}\n"
                                     f"Уровень русского: {data['rus']}\n"
-                                    f"Уровень русского: {data['uzb']}\n"
+                                    f"Уровень узбекского: {data['uzb']}\n"
                                     f"Уровень английского: {data['eng']}\n"
                                     f"Опыт работы: {data['exp']}")
         await append_data(response_date, data['surname'], data['name'], data['number'], birthday, data['town_and_district'], data['edu'], data['rus'], data['uzb'], data['eng'], data['exp'])
