@@ -21,3 +21,7 @@ class ProfileStatesGroup(StatesGroup):
     input_experience = State()
     experience_describe = State()
     input_day_and_time = State()
+
+class AdminStatesGroup(StatesGroup):
+    chat_id = State()
+    message = State()
