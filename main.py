@@ -116,7 +116,7 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
         chat_id = message.from_user.id
         await bot.send_message(chat_id="-1002017595145",
                                text=f"Дата отклика: {response_date}\n\n"
-                                    f"Причина отказа {data['cause']}"
+                                    f"Причина отказа {data['cause']}\n"
                                     f"Chat_id: {chat_id}")
         await append_reject(response_date, data['cause'])
     await bot.send_message(chat_id=message.from_user.id,
@@ -240,7 +240,7 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
                                     f"Уровень русского: {data['rus']}\n"
                                     f"Уровень узбекского: {data['uzb']}\n"
                                     f"Уровень английского: {data['eng']}\n"
-                                    f"Опыт работы: {data['exp']}"
+                                    f"Опыт работы: {data['exp']}\n"
                                     f"Chat_id: {chat_id}")
         await append_data(response_date, data['surname'], data['name'], data['number'], birthday, data['town_and_district'], data['edu'], data['rus'], data['uzb'], data['eng'], data['exp'])
         
@@ -342,7 +342,7 @@ async def calendar_keyboard(callback_query: types.CallbackQuery, state: FSMConte
                                                 f"Номер телефона: {data['number']}\n"
                                                 f"Имя: {data['name']}\n"
                                                 f"Фамилия: {data['surname']}\n"
-                                                f"Дата рождения: {birthday}"
+                                                f"Дата рождения: {birthday}\n"
                                                 f"Chat_id: {chat_id}")
                     await append_data_less_18(response_date, data['number'], data['name'], data['surname'], birthday)
                     ###Добавление в базу данных
