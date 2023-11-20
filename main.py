@@ -113,9 +113,11 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
 
         now = datetime.now()
         response_date = now.strftime("%d.%m.%Y %H:%M:%S")
+        chat_id = message.from_user.id
         await bot.send_message(chat_id="-1002017595145",
                                text=f"Дата отклика: {response_date}\n\n"
-                                    f"Причина отказа {data['cause']}")
+                                    f"Причина отказа {data['cause']}"
+                                    f"Chat_id: {chat_id}")
         await append_reject(response_date, data['cause'])
     await bot.send_message(chat_id=message.from_user.id,
                            text=again)
@@ -225,6 +227,7 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
         response_date = now.strftime("%d.%m.%Y %H:%M:%S")
         without_spaces = str(data['month']).replace(" ", "")
         birthday = f"{data['day']}.{without_spaces}.{data['year']}"
+        chat_id = message.from_user.id
 
         await bot.send_message(chat_id="-1002017595145",
                                text=f"Дата отклика: {response_date}\n\n"
@@ -237,7 +240,8 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
                                     f"Уровень русского: {data['rus']}\n"
                                     f"Уровень узбекского: {data['uzb']}\n"
                                     f"Уровень английского: {data['eng']}\n"
-                                    f"Опыт работы: {data['exp']}")
+                                    f"Опыт работы: {data['exp']}"
+                                    f"Chat_id: {chat_id}")
         await append_data(response_date, data['surname'], data['name'], data['number'], birthday, data['town_and_district'], data['edu'], data['rus'], data['uzb'], data['eng'], data['exp'])
         
         await state.finish()
@@ -326,6 +330,7 @@ async def calendar_keyboard(callback_query: types.CallbackQuery, state: FSMConte
                 now = datetime.now()
                 response_date = now.strftime("%d.%m.%Y %H:%M:%S")
                 birthday = f"{data['day']}.{without_spaces}.{data['year']}"
+                chat_id = callback_query.from_user.id
                 if now.year - int(data['year']) < 18:
                     await bot.send_message(callback_query.message.chat.id, text=less_than_18)
                     await bot.send_message(callback_query.message.chat.id, text=again)
@@ -337,7 +342,8 @@ async def calendar_keyboard(callback_query: types.CallbackQuery, state: FSMConte
                                                 f"Номер телефона: {data['number']}\n"
                                                 f"Имя: {data['name']}\n"
                                                 f"Фамилия: {data['surname']}\n"
-                                                f"Дата рождения: {birthday}")
+                                                f"Дата рождения: {birthday}"
+                                                f"Chat_id: {chat_id}")
                     await append_data_less_18(response_date, data['number'], data['name'], data['surname'], birthday)
                     ###Добавление в базу данных
 
