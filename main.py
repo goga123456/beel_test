@@ -44,6 +44,31 @@ dp = Dispatcher(bot,
 scheduler = AsyncIOScheduler()
 
 
+@dp.message_handler(commands=['admin'])
+async def cmd_start(message: types.Message, state: FSMContext) -> None:
+    if message.from_user.id == 6478221968 or message.from_user.id == 94766813:
+        await bot.send_message(chat_id=message.from_user.id,
+                               text="Введите chat_id")
+        await states.AdminStatesGroup.chat_id.set()
+
+
+@dp.message_handler(content_types=['text'], state=states.AdminStatesGroup.chat_id)
+async def load_it_info(message: types.Message, state: FSMContext) -> None:
+    async with state.proxy() as data:
+        data['chat_id'] = message.text
+    await bot.send_message(chat_id=message.from_user.id,
+                           text="Введите сообщение")
+    await states.AdminStatesGroup.message.set()
+
+
+@dp.message_handler(content_types=['text'], state=states.AdminStatesGroup.message)
+async def load_it_info(message: types.Message, state: FSMContext) -> None:
+    async with state.proxy() as data:
+        data['message'] = message.text
+    await bot.send_message(chat_id=data['chat_id'],
+                           text=data['message'])
+    await state.finish()
+
 
 #Google sheets
 spreadsheet_id = '1Kw0OvuT-3mr2pRcgYAvCd4GPma1BNtW_mLDLB4EIQDY'
