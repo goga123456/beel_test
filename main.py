@@ -20,6 +20,7 @@ from states import ProfileStatesGroup, AdminStatesGroup
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 from config import TOKEN_API
+from aiogram.utils.exceptions import ChatNotFound
 
 storage = MemoryStorage()
 TOKEN = os.getenv('BOT_TOKEN')
