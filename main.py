@@ -52,22 +52,42 @@ async def cmd_start(message: types.Message, state: FSMContext) -> None:
         await states.AdminStatesGroup.chat_id.set()
 
 
+
 @dp.message_handler(content_types=['text'], state=states.AdminStatesGroup.chat_id)
 async def load_it_info(message: types.Message, state: FSMContext) -> None:
-    async with state.proxy() as data:
-        data['chat_id'] = message.text
-    await bot.send_message(chat_id=message.from_user.id,
-                           text="Введите сообщение")
-    await states.AdminStatesGroup.message.set()
+    if message.text == '/start':
+        await state.finish()
+        await bot.send_message(chat_id=message.from_user.id,
+                               text=start_msg,
+                               reply_markup=get_initial_kb())
+    else:
+        async with state.proxy() as data:
+            data['chat_id'] = message.text
+        await bot.send_message(chat_id=message.from_user.id,
+                               text="Введите сообщение")
+        await states.AdminStatesGroup.message.set()
+
 
 
 @dp.message_handler(content_types=['text'], state=states.AdminStatesGroup.message)
 async def load_it_info(message: types.Message, state: FSMContext) -> None:
-    async with state.proxy() as data:
-        data['message'] = message.text
-    await bot.send_message(chat_id=data['chat_id'],
-                           text=data['message'])
-    await state.finish()
+    try:
+        if message.text == '/start':
+            await state.finish()
+            await bot.send_message(chat_id=message.from_user.id,
+                                   text=start_msg,
+                                   reply_markup=get_initial_kb())
+        else:
+            async with state.proxy() as data:
+                data['message'] = message.text
+            await bot.send_message(chat_id=data['chat_id'],
+                                   text=data['message'])
+            await state.finish()
+    except ChatNotFound:
+        await bot.send_message(chat_id=message.from_user.id,
+                               text="Неверный chat_id, введите заново")
+        await states.AdminStatesGroup.chat_id.set()
+
 
 
 #Google sheets
