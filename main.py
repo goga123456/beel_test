@@ -47,7 +47,7 @@ scheduler = AsyncIOScheduler()
 
 @dp.message_handler(commands=['admin'])
 async def cmd_start(message: types.Message, state: FSMContext) -> None:
-    if message.from_user.id == 6478221968 or message.from_user.id == 94766813:
+    if message.from_user.id == 6478221968 or message.from_user.id == 94766813 or message.from_user.id == 5452154717:
         await bot.send_message(chat_id=message.from_user.id,
                                text="Введите chat_id")
         await states.AdminStatesGroup.chat_id.set()
